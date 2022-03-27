@@ -3,8 +3,9 @@ const path = require("path");
 
 const loadMainWindow = () => {
     const mainWindow = new BrowserWindow({
-        width : 1200,
-        height: 800,
+        width : screen.width,
+        height: screen.height,
+        fullscreenable: true,
         webPreferences: {
             nodeIntegration: true
         }
@@ -14,7 +15,23 @@ const loadMainWindow = () => {
 }
 
 
-app.on("ready", loadMainWindow);
+app.whenReady().then(() => {
+
+    const {screen} = require('electron')
+
+    const primaryDisplay = screen.getPrimaryDisplay()
+    const { width, height } = primaryDisplay.workAreaSize
+
+    mainWindow = new BrowserWindow({ 
+        width, 
+        height,
+        icon: 'favicon.ico',
+    
+    })
+    mainWindow.loadFile(path.join(__dirname, "index.html"));
+
+
+})
 
 
 app.on("window-all-closed", () => {
